@@ -1,0 +1,136 @@
+object Form4: TForm4
+  Left = 0
+  Top = 0
+  Caption = 'Form4'
+  ClientHeight = 588
+  ClientWidth = 993
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Slika: TImage
+    Left = 8
+    Top = 8
+    Width = 833
+    Height = 545
+    OnMouseDown = SlikaMouseDown
+  end
+  object DugmeProstiMnogougao: TButton
+    Left = 8
+    Top = 559
+    Width = 105
+    Height = 25
+    Caption = 'Prosti mnogougao'
+    TabOrder = 0
+    OnClick = DugmeProstiMnogougaoClick
+  end
+  object EditBrojTacaka: TEdit
+    Left = 861
+    Top = 8
+    Width = 121
+    Height = 21
+    TabOrder = 1
+    Text = '20'
+  end
+  object DugmeGenerisanjeTacaka: TButton
+    Left = 861
+    Top = 35
+    Width = 75
+    Height = 25
+    Caption = 'Generisi tacke'
+    TabOrder = 2
+    OnClick = DugmeGenerisanjeTacakaClick
+  end
+  object UvijanjePoklonaDugme: TButton
+    Left = 119
+    Top = 559
+    Width = 98
+    Height = 25
+    Caption = 'Uvijanje poklona'
+    TabOrder = 3
+    OnClick = UvijanjePoklonaDugmeClick
+  end
+  object GrahamScanDugme: TButton
+    Left = 223
+    Top = 559
+    Width = 75
+    Height = 25
+    Caption = 'Graham scan'
+    TabOrder = 4
+    OnClick = GrahamScanDugmeClick
+  end
+  object dodavanjeTacakaRadio: TRadioButton
+    Left = 856
+    Top = 128
+    Width = 113
+    Height = 17
+    Caption = 'Dodavanje tacaka'
+    TabOrder = 5
+  end
+  object unutarKonveksnogRadio: TRadioButton
+    Left = 856
+    Top = 160
+    Width = 113
+    Height = 17
+    Caption = 'Unutar konveksnog'
+    TabOrder = 6
+  end
+  object KonveksniInduktivnoDugme: TButton
+    Left = 304
+    Top = 559
+    Width = 113
+    Height = 25
+    Caption = 'Konveksni induktivno'
+    TabOrder = 7
+    OnClick = KonveksniInduktivnoDugmeClick
+  end
+  object crtanjeMnogougla: TRadioButton
+    Left = 856
+    Top = 192
+    Width = 113
+    Height = 17
+    Caption = 'Crtanje mnogougla'
+    TabOrder = 8
+  end
+  object zavrsiMnogougaoDugme: TButton
+    Left = 867
+    Top = 496
+    Width = 102
+    Height = 25
+    Caption = 'Zavrsi mnogougao'
+    TabOrder = 9
+    OnClick = zavrsiMnogougaoDugmeClick
+  end
+  object TriangulacijaDugme: TButton
+    Left = 423
+    Top = 559
+    Width = 98
+    Height = 25
+    Caption = 'Triangulacija'
+    TabOrder = 10
+    OnClick = TriangulacijaDugmeClick
+  end
+  object povrsinaUnijeDugme: TButton
+    Left = 856
+    Top = 327
+    Width = 126
+    Height = 25
+    Caption = 'Povr'#353'ina unije'
+    TabOrder = 11
+    OnClick = povrsinaUnijeDugmeClick
+  end
+  object DodavanjePravougaonika: TRadioButton
+    Left = 856
+    Top = 296
+    Width = 126
+    Height = 17
+    Caption = 'Dodaji Pravougaonike'
+    TabOrder = 12
+    OnClick = DodavanjePravougaonikaClick
+  end
+end

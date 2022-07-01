@@ -1,0 +1,87 @@
+//---------------------------------------------------------------------------
+
+#ifndef pomocnaH
+#define pomocnaH
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+struct Tacka {
+	double x,y;
+	Tacka(double X = 0, double Y = 0):x(X),y(Y) {}
+    void Crtaj(TImage*);
+};
+
+bool operator<(Tacka,Tacka);
+bool operator==(Tacka,Tacka);
+
+struct Duz {
+	Tacka A,B;
+	Duz(Tacka C, Tacka D):A(C),B(D) {
+		if(B < A) swap(A,B);
+    }
+};
+
+bool daLiSeSijeku(Duz p, Duz q);
+int Orijentacija(Tacka A, Tacka B, Tacka C);
+void IscrtajPoligon(vector<Tacka> &poligon, TImage* slika);
+bool daLiJeUnutarTrougla(Tacka A, Tacka B, Tacka C, Tacka P);
+bool daLiJeUnutarKonveksnog(vector<Tacka> &konveksni, Tacka P);
+void Tangente(vector<Tacka>&, Tacka, int&,int&);
+
+/// ZA PROJEKAT:
+
+class Cvor {
+private:
+	int pocetak;
+	int kraj;
+	double *X;
+	Cvor *lijevi;
+	Cvor *desni;
+	int brojac;
+	long double ukupno;
+
+public:
+
+	Cvor(const int &pocetak, const int &kraj, double *X);
+	int dajIndeksSredine();
+
+	Cvor* dajLijevi();
+
+	Cvor* dajDesni() {
+		if (desni == nullptr)
+			desni = new Cvor(dajIndeksSredine(), kraj, X);
+		return desni;
+	}
+
+	long double azuriraj(const int &i, const int &j, const int &tip) {
+		if (i >= j)
+			return 0;
+		if (pocetak == i && kraj == j)
+			brojac += tip;
+		else {
+			dajLijevi()->azuriraj(i, min(dajIndeksSredine(), j), tip);
+			dajDesni()->azuriraj(max(dajIndeksSredine(), i), j, tip);
+		}
+
+		if (brojac > 0)
+			ukupno = X[kraj] - X[pocetak];
+		else
+			ukupno = dajLijevi()->ukupno + dajDesni()->ukupno;
+
+		return ukupno;
+	}
+};
+
+struct Pravougaonik {
+	Tacka donjaLijeva, gornjaDesna;
+	Pravougaonik(Tacka A, Tacka B) : donjaLijeva(A), gornjaDesna(B) {
+		if(B.x < A.x){
+			swap(donjaLijeva, gornjaDesna);
+		}
+	}
+    void Crtaj(TImage*);
+};
+
+//---------------------------------------------------------------------------
+#endif

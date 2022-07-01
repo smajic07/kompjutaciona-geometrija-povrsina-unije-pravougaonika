@@ -1,0 +1,325 @@
+﻿//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "Forma.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+#include <string>
+
+/// ZA PROJEKAT:
+// vector i algorithm već uključeni u drugim fajlovima
+
+#include <unordered_map>
+#include <unordered_set>
+
+TForm4 *Form4;
+//---------------------------------------------------------------------------
+__fastcall TForm4::TForm4(TComponent* Owner)
+	: TForm(Owner)
+{
+  Slika->Canvas->FillRect(Rect(0,0,Slika->Width, Slika->Height));
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm4::SlikaMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y)
+{
+	if(dodavanjeTacakaRadio->Checked) {
+	  Tacka nova(X,Y);
+	  tacke.push_back(nova);
+	  nova.Crtaj(Slika);
+	}
+	else if(unutarKonveksnogRadio->Checked) {
+	  if(daLiJeUnutarKonveksnog(konveksni_omotac,Tacka(X,Y)))
+		ShowMessage("Tacka je unutar konveksnog");
+	  else {
+		int desna = -1, lijeva = -1;
+		Tangente(konveksni_omotac, Tacka(X,Y),lijeva,desna);
+		Tacka L = konveksni_omotac[lijeva];
+		Slika->Canvas->MoveTo(X,Y);
+		Slika->Canvas->LineTo(L.x,L.y);
+		Tacka D = konveksni_omotac[desna];
+		Slika->Canvas->MoveTo(X,Y);
+		Slika->Canvas->LineTo(D.x,D.y);
+	  }
+	}
+	else if(crtanjeMnogougla->Checked) {
+		if(tacke.empty()) {
+			Tacka nova(X,Y);
+			tacke.push_back(nova);
+			nova.Crtaj(Slika);
+			Slika->Canvas->MoveTo(X,Y);
+		}
+		else {
+            Tacka nova(X,Y);
+			tacke.push_back(nova);
+			nova.Crtaj(Slika);
+			Slika->Canvas->LineTo(X,Y);
+        }
+	}
+	else if(DodavanjePravougaonika->Checked) {
+		if(dodajemDonjuLijevu){
+			donjaLijeva = Tacka(X,Y);
+			donjaLijeva.Crtaj(Slika);
+			dodajemDonjuLijevu = false;
+		}
+		else{
+			gornjaDesna = Tacka(X,Y);
+			gornjaDesna.Crtaj(Slika);
+
+			Tacka donjaDesna(gornjaDesna.x, donjaLijeva.y);
+			Tacka gornjaLijeva(donjaLijeva.x, gornjaDesna.y);
+
+			Pravougaonik pravougaonik(gornjaLijeva, donjaDesna);
+			pravougaonici.push_back(pravougaonik);
+			pravougaonik.Crtaj(Slika);
+
+			dodajemDonjuLijevu = true;
+		}
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm4::DugmeProstiMnogougaoClick(TObject *Sender)
+{
+  int n = tacke.size();
+  for(int i = 1; i < n; i++)
+	if(tacke[i] < tacke[0]) swap(tacke[i],tacke[0]);
+
+  Tacka lijeva = tacke[0];
+  sort(tacke.begin()+1,tacke.end(),[lijeva](Tacka A, Tacka B)->bool {
+										return Orijentacija(lijeva,A,B) < 0;
+									});
+  Slika->Canvas->Pen->Color = clBlue;
+  IscrtajPoligon(tacke,Slika);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm4::DugmeGenerisanjeTacakaClick(TObject *Sender)
+{
+  int broj_tacaka = EditBrojTacaka->Text.ToInt();
+  for(int i = 0; i < broj_tacaka;i++) {
+	  Tacka nova(rand()%Slika->Width, rand()%Slika->Height);
+	  tacke.push_back(nova);
+	  nova.Crtaj(Slika);
+  }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm4::UvijanjePoklonaDugmeClick(TObject *Sender)
+{
+  int n = tacke.size();
+  int indeks_lijeve = 0;
+  for(int i = 1; i < n; i++)
+	if(tacke[i] < tacke[indeks_lijeve])
+		indeks_lijeve = i;
+
+  konveksni_omotac.push_back(tacke[indeks_lijeve]);
+  while(true) {
+	  Tacka zadnja = konveksni_omotac[konveksni_omotac.size()-1];
+	  int novi = 0;
+	  if(zadnja == tacke[0])
+		novi = 1;
+	  for(int i = 1; i < n; i++) {
+		  if(tacke[i] == zadnja)
+			continue;
+		  if(Orijentacija(zadnja,tacke[novi],tacke[i]) > 0)
+			novi = i;
+	  }
+	  if(tacke[novi] == konveksni_omotac[0])
+		break;
+	  konveksni_omotac.push_back(tacke[novi]);
+  }
+  IscrtajPoligon(konveksni_omotac,Slika);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm4::GrahamScanDugmeClick(TObject *Sender)
+{
+  int n = tacke.size();
+  for(int i = 1; i < n; i++)
+	if(tacke[i] < tacke[0]) swap(tacke[i],tacke[0]);
+
+  Tacka lijeva = tacke[0];
+  sort(tacke.begin()+1,tacke.end(),[lijeva](Tacka A, Tacka B)->bool {
+										return Orijentacija(lijeva,A,B) < 0;
+									});
+
+
+  konveksni_omotac.push_back(tacke[0]);
+  konveksni_omotac.push_back(tacke[1]);
+  for(int i = 2; i < n; i++) {
+	Tacka predzadnja = konveksni_omotac[konveksni_omotac.size()-2];
+	Tacka zadnja = konveksni_omotac[konveksni_omotac.size()-1];
+	Tacka nova = tacke[i];
+	while(Orijentacija(predzadnja,zadnja,nova) > 0) {
+	  konveksni_omotac.pop_back();
+	  zadnja = predzadnja;
+	  predzadnja = konveksni_omotac[konveksni_omotac.size()-2];
+	}
+
+	konveksni_omotac.push_back(nova);
+  }
+  IscrtajPoligon(konveksni_omotac,Slika);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm4::KonveksniInduktivnoDugmeClick(TObject *Sender)
+{
+   konveksni_omotac.push_back(tacke[0]);
+   konveksni_omotac.push_back(tacke[1]);
+   konveksni_omotac.push_back(tacke[2]);
+   if(Orijentacija(konveksni_omotac[0],konveksni_omotac[1],konveksni_omotac[2]) >= 0)
+	 swap(konveksni_omotac[1],konveksni_omotac[2]);
+   for(int i=3;i<tacke.size();i++)
+	   if(!daLiJeUnutarKonveksnog(konveksni_omotac,tacke[i]))  {
+		   int lijevi = -1,desni = -1;
+		   Tangente(konveksni_omotac,tacke[i],lijevi,desni);
+
+		   if(desni<lijevi) {
+			 konveksni_omotac.erase(konveksni_omotac.begin()+desni+1,konveksni_omotac.begin()+lijevi);
+			 konveksni_omotac.insert(konveksni_omotac.begin()+desni+1,tacke[i]);
+		   }
+		   else {
+			 konveksni_omotac.erase(konveksni_omotac.begin()+desni+1,konveksni_omotac.end());
+			 konveksni_omotac.erase(konveksni_omotac.begin(),konveksni_omotac.begin()+lijevi);
+			 konveksni_omotac.insert(konveksni_omotac.begin(),tacke[i]);
+		   }
+	   }
+   IscrtajPoligon(konveksni_omotac,Slika);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm4::zavrsiMnogougaoDugmeClick(TObject *Sender)
+{
+  Slika->Canvas->LineTo(tacke[0].x,tacke[0].y);
+}
+//---------------------------------------------------------------------------
+
+void TForm4::pomjeriItNaprijed(list<pair<Tacka,int>>::iterator &it, list<pair<Tacka,int>> &l) {
+	it++;
+	if(it == l.end())
+	  it = l.begin();
+}
+
+//---------------------------------------------------------------------------
+
+void TForm4::pomjeriItNazad(list<pair<Tacka,int>>::iterator &it, list<pair<Tacka,int>> &l) {
+
+	if(it == l.begin())
+	  it = l.end();
+	it--;
+}
+
+//---------------------------------------------------------------------------
+
+void __fastcall TForm4::TriangulacijaDugmeClick(TObject *Sender)
+{
+  list<pair<Tacka,int>> Tacke;
+  for(int i = 0; i < tacke.size();i++)
+	Tacke.push_back({tacke[i],i});
+
+  vector<pair<int,int>> dijagonale;
+  auto trenutni = Tacke.begin();
+  auto prethodni = Tacke.begin(), sljedeci = Tacke.begin();
+  pomjeriItNazad(prethodni,Tacke);
+  pomjeriItNaprijed(sljedeci,Tacke);
+
+  while(Tacke.size() > 3) {
+	  if(Orijentacija(prethodni->first,trenutni->first,sljedeci->first) < 0) {
+		  bool uho = true;
+		  auto it = sljedeci;
+		  pomjeriItNaprijed(it,Tacke);
+		  while(it!=prethodni) {
+			  if(daLiJeUnutarTrougla(prethodni->first,trenutni->first,sljedeci->first,it->first)) {
+				  uho = false;
+				  break;
+			  }
+              pomjeriItNaprijed(it,Tacke);
+		  }
+		  if(uho) {
+			  dijagonale.push_back({prethodni->second,sljedeci->second});
+			  Tacke.erase(trenutni);
+			  trenutni = prethodni;
+			  pomjeriItNazad(prethodni,Tacke);
+		  }
+		  else {
+			  prethodni = trenutni;
+			  trenutni = sljedeci;
+			  pomjeriItNaprijed(sljedeci,Tacke);
+          }
+
+	  }
+	  else {
+		prethodni = trenutni;
+		trenutni = sljedeci;
+		pomjeriItNaprijed(sljedeci,Tacke);
+      }
+  }
+
+  for(int i = 0; i < dijagonale.size();i++) {
+	  Tacka prva = tacke[dijagonale[i].first];
+	  Tacka druga = tacke[dijagonale[i].second];
+	  Slika->Canvas->MoveTo(prva.x,prva.y);
+      Slika->Canvas->LineTo(druga.x,druga.y);
+  }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm4::povrsinaUnijeDugmeClick(TObject *Sender)
+{
+	int brojPravougaonika(pravougaonici.size());
+	vector<vector<double>> dogadjaji(brojPravougaonika*2);
+
+	int redniBrojDogadjaja(0);
+
+	int brojDogadjaja(dogadjaji.size());
+	double *X(new double[brojDogadjaja]);
+	int indeks(0);
+
+    for (auto pravougaonik : pravougaonici) {
+		dogadjaji[redniBrojDogadjaja++] = { pravougaonik.donjaLijeva.y, 1,
+									pravougaonik.donjaLijeva.x, pravougaonik.gornjaDesna.x };
+		dogadjaji[redniBrojDogadjaja++] = { pravougaonik.gornjaDesna.y, -1,
+									pravougaonik.donjaLijeva.x, pravougaonik.gornjaDesna.x };
+
+		X[indeks++] = pravougaonik.donjaLijeva.x;
+		X[indeks++] = pravougaonik.gornjaDesna.x;
+
+    }
+
+	sort(dogadjaji.begin(), dogadjaji.end(), [](const vector<double> &a, const vector<double> &b) -> bool {
+												 return a[0] < b[0];
+											 });
+
+
+	for(auto it = Xvrijednosti.begin(); it != Xvrijednosti.end(); ++it){
+	int indeks(0);
+	}
+
+	sort(X, X + brojDogadjaja);
+
+	unordered_map<double, int> Xi; // Heš mapa bez duplikata
+	for (int i = 0; i < brojDogadjaja; ++i)
+        Xi.insert({X[i], i});
+
+    Cvor *aktivni(new Cvor(0, brojDogadjaja - 1, X));
+    long double povrsina(0);
+    long double trenutna_x_suma(0);
+    double trenutni_y(dogadjaji[0][0]);
+
+    for (auto dogadjaj : dogadjaji) {
+        double y = dogadjaj[0], tip = dogadjaj[1], x1 = dogadjaj[2], x2 = dogadjaj[3];
+        povrsina += trenutna_x_suma * (y - trenutni_y);
+		trenutna_x_suma = aktivni->azuriraj((Xi.find(x1))->second, (Xi.find(x2))->second,
+											tip);
+        trenutni_y = y;
+    }
+
+	ShowMessage((int)(povrsina));
+
+}
+
+//---------------------------------------------------------------------------

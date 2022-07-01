@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2021/03/15 08:05:26.000.968,=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Project4PCH1.h</Transaction>
+    <Transaction>2021/03/15 08:05:27.000.720,=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Unit4.cpp</Transaction>
+    <Transaction>2021/04/16 00:12:46.000.339,=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Project4PCH1.h</Transaction>
+    <Transaction>2021/04/16 00:12:46.000.861,=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Unit4.cpp</Transaction>
+    <Transaction>2022/03/16 10:26:22.000.023,=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Project4PCH1.h</Transaction>
+    <Transaction>2022/03/16 10:26:22.000.562,=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Unit4.cpp</Transaction>
+    <Transaction>2022/03/16 10:27:18.000.363,C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Unit4.h=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\vjezbe2022\Forma.h</Transaction>
+    <Transaction>2022/03/16 10:27:18.000.363,C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Unit4.dfm=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\vjezbe2022\Forma.dfm</Transaction>
+    <Transaction>2022/03/16 10:27:18.000.363,C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Unit4.cpp=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\vjezbe2022\Forma.cpp</Transaction>
+    <Transaction>2022/03/16 10:28:14.000.409,=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Unit4.cpp</Transaction>
+    <Transaction>2022/03/16 10:28:22.000.766,C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Unit4.cpp=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\vjezbe2022\pomocna.cpp</Transaction>
+    <Transaction>2022/03/16 10:28:22.000.766,C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Unit4.h=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\vjezbe2022\pomocna.h</Transaction>
+    <Transaction>2022/03/16 10:40:08.000.105,C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Project4PCH1.h=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\vjezbe2022\Vjezbe2022.h</Transaction>
+    <Transaction>2022/03/16 10:40:20.000.026,C:\Users\Admir\Documents\Embarcadero\Studio\Projects\Project4.cbproj=C:\Users\Admir\Documents\Embarcadero\Studio\Projects\vjezbe2022\Vjezbe.cbproj</Transaction>
+  </Transactions>
+</BorlandProject>
